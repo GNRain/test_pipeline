@@ -23,7 +23,7 @@ jobs:
           git checkout dev-cicd
           git pull origin dev-cicd
           git fetch origin $CURRENT_SPRINT
-          git merge $CURRENT_SPRINT
+          git merge origin/$CURRENT_SPRINT
           git push origin dev-cicd
 
       - name: Delete current sprint branch
