@@ -19,7 +19,7 @@ jobs:
 
       - name: Merge changes from $CURRENT_SPRINT into dev-cicd
         run: |
-          git checkout dev-cicd
+          git checkout -B dev-cicd origin/dev-cicd
           git pull origin dev-cicd
           git merge $CURRENT_SPRINT
           git push origin dev-cicd
