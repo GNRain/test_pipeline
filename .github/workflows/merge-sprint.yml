@@ -6,7 +6,7 @@ on:
   workflow_dispatch:  # Enable manual triggering of the workflow
 
 env:
-  CURRENT_SPRINT: origin/SPRINT_23_CV39  # Update with the current sprint name including the 'origin/' prefix
+  CURRENT_SPRINT: SPRINT_23_CV39  # Update with the current sprint name including the 'origin/' prefix
   BRANCH_PREFIX: SPRINT_23_CV  # Update with your branch prefix without quotes
 
 jobs:
@@ -20,10 +20,10 @@ jobs:
       - name: Merge changes from $CURRENT_SPRINT into dev-cicd
         run: |
           git fetch origin
-          git checkout origin/dev-cicd
-          git pull origin/dev-cicd
+          git checkout ev-cicd
+          git pull dev-cicd
           git merge $CURRENT_SPRINT
-          git push origin/dev-cicd
+          git push dev-cicd
 
       - name: Delete current sprint branch
         run: |
@@ -34,12 +34,12 @@ jobs:
         run: |
           CURRENT_SPRINT_NUMBER=${CURRENT_SPRINT#*_CV}  # Extract the current sprint number
           NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
-          NEXT_SPRINT_BRANCH=origin/$BRANCH_PREFIX$NEXT_SPRINT_NUMBER  # Include 'origin/' prefix for the remote branch
+          NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER  # Include 'origin/' prefix for the remote branch
           git checkout -b $NEXT_SPRINT_BRANCH
           git push origin $NEXT_SPRINT_BRANCH
 
       - name: Update CURRENT_SPRINT for the next sprint
         run: |
           CURRENT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
-          CURRENT_SPRINT=origin/$BRANCH_PREFIX$CURRENT_SPRINT_NUMBER  # Include 'origin/' prefix for the remote branch
+          CURRENT_SPRINT=$BRANCH_PREFIX$CURRENT_SPRINT_NUMBER  # Include 'origin/' prefix for the remote branch
           echo "CURRENT_SPRINT=$CURRENT_SPRINT" >> $GITHUB_ENV
