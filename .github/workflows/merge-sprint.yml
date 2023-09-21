@@ -31,7 +31,7 @@ jobs:
       - name: Delete current sprint branch
         run: |
           git fetch origin $CURRENT_SPRINT
-          git branch -d origin/$CURRENT_SPRINT
+          git branch -d --remote origin/$CURRENT_SPRINT
           git push origin --delete $CURRENT_SPRINT
 
       - name: Create a new branch for the next sprint
