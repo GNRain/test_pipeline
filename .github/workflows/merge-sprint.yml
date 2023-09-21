@@ -57,8 +57,6 @@ jobs:
           
       - name: Create a new branch for the next sprint
         run: |
-          CURRENT_SPRINT_NUMBER= ${{ steps.extract_number.outputs.number }}  # Extract the current sprint number
-          NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
           NEXT_SPRINT_BRANCH=${{ env.BRANCH_PREFIX }}$NEXT_SPRINT_NUMBER
           git checkout -b $NEXT_SPRINT_BRANCH
           git push origin $NEXT_SPRINT_BRANCH
