@@ -57,6 +57,6 @@ jobs:
           
       - name: Create a new branch for the next sprint
         run: |
-          NEXT_SPRINT_BRANCH=${{ env.BRANCH_PREFIX }}$NEXT_SPRINT_NUMBER
+          NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER
           git checkout -b $NEXT_SPRINT_BRANCH
           git push origin $NEXT_SPRINT_BRANCH
