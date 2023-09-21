@@ -19,10 +19,10 @@ jobs:
 
       - name: Merge changes from $CURRENT_SPRINT into dev-cicd
         run: |
-          git checkout -b dev-cicd origin/dev-cicd
-          git pull dev-cicd
+          git checkout dev-cicd
+          git pull origin dev-cicd
           git merge $CURRENT_SPRINT
-          git push dev-cicd
+          git push origin dev-cicd
 
       - name: Delete current sprint branch
         run: |
