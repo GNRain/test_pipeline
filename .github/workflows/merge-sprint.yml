@@ -3,6 +3,7 @@ name: Merge Sprint
 on:
   schedule:
     - cron: '0 18 * * 0'  # Runs every Sunday at 8 PM Switzerland time (UTC time: 18:00)
+  workflow_dispatch:
 
 env:
   CURRENT_SPRINT: "Sprint_23_CV39"  # Update with the current sprint name
