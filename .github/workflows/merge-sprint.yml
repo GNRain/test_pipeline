@@ -46,7 +46,7 @@ jobs:
           CURRENT_SPRINT_NUMBER=${SPRINT_LINE#*_CV}
           echo "::set-output name=number::${CURRENT_SPRINT_NUMBER}"
           
-      - name: Update current sprint
+      - name: Update current sprint and create new branch
         run: |
           CURRENT_SPRINT_NUMBER=${{ steps.extract_number.outputs.number }}  # Extract the current sprint number
           NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
@@ -54,9 +54,7 @@ jobs:
           git add current_sprint.txt
           git commit -m "Update current sprint to ${{ env.BRANCH_PREFIX }}$NEXT_SPRINT_NUMBER"
           git push origin dev-cicd
-          
-      - name: Create a new branch for the next sprint
-        run: |
           NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER
           git checkout -b $NEXT_SPRINT_BRANCH
           git push origin $NEXT_SPRINT_BRANCH
+
