@@ -35,7 +35,7 @@ jobs:
       - name: Delete current sprint branch
         run: |
           git fetch origin ${{ steps.current_sprint.outputs.sprint }}
-          git branch -d --remote ${{ steps.current_sprint.outputs.sprint }}
+          git branch -d --remote origin/${{ steps.current_sprint.outputs.sprint }}
           git push origin --delete ${{ steps.current_sprint.outputs.sprint }}
 
       - name: Update current sprint
