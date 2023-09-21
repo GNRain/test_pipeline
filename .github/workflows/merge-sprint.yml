@@ -6,8 +6,8 @@ on:
   workflow_dispatch:  # Enable manual triggering of the workflow
 
 env:
-  CURRENT_SPRINT: origin/Sprint_23_CV39  # Update with the current sprint name without quotes
-  BRANCH_PREFIX: origin/Sprint_23_CV  # Update with your branch prefix without quotes
+  CURRENT_SPRINT: origin Sprint_23_CV39  # Update with the current sprint name without quotes
+  BRANCH_PREFIX: origin Sprint_23_CV  # Update with your branch prefix without quotes
 
 jobs:
   merge_sprint:
