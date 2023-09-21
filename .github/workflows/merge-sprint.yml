@@ -30,7 +30,7 @@ jobs:
 
       - name: Delete current sprint branch
         run: |
-          git checkout $CURRENT_SPRINT
+          git fetch origin $CURRENT_SPRINT
           git branch -d $CURRENT_SPRINT
           git push origin --delete $CURRENT_SPRINT
 
