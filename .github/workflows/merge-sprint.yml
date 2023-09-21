@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  CURRENT_SPRINT: "Sprint_23_CV39"  # Update with the current sprint name
-  BRANCH_PREFIX: "Sprint_23_CV"  # Update with your branch prefix
+  CURRENT_SPRINT: "SPRINT_23_CV39"  # Update with the current sprint name
+  BRANCH_PREFIX: "SPRINT_23_CV"  # Update with your branch prefix
 
 jobs:
   merge_sprint:
