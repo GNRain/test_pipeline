@@ -3,11 +3,11 @@ name: Merge Sprint
 on:
   schedule:
     - cron: '0 18 * * 0'  # Runs every Sunday at 8 PM Switzerland time (UTC time: 18:00)
-  workflow_dispatch:
+  workflow_dispatch:  # Enable manual triggering of the workflow
 
 env:
-  CURRENT_SPRINT: SPRINT_23_CV39  # Update with the current sprint name
-  BRANCH_PREFIX: SPRINT_23_CV  # Update with your branch prefix
+  CURRENT_SPRINT: Sprint_23_CV39  # Update with the current sprint name without quotes
+  BRANCH_PREFIX: Sprint_23_CV  # Update with your branch prefix without quotes
 
 jobs:
   merge_sprint:
@@ -17,28 +17,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Merge current sprint into dev-cicd
+      - name: Merge changes from $CURRENT_SPRINT into dev-cicd
         run: |
           git checkout main
           git pull origin main
-          git merge "$CURRENT_SPRINT"
+          git merge $CURRENT_SPRINT
           git push origin main
 
       - name: Delete current sprint branch
         run: |
-          git branch -d "$CURRENT_SPRINT"
-          git push origin --delete "$CURRENT_SPRINT"
+          git branch -d $CURRENT_SPRINT
+          git push origin --delete $CURRENT_SPRINT
 
       - name: Create a new branch for the next sprint
         run: |
           CURRENT_SPRINT_NUMBER=${CURRENT_SPRINT#*_CV}  # Extract the current sprint number
           NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
-          NEXT_SPRINT_BRANCH="$BRANCH_PREFIX$NEXT_SPRINT_NUMBER"  # Create the next sprint branch name
-          git checkout -b "$NEXT_SPRINT_BRANCH"
-          git push origin "$NEXT_SPRINT_BRANCH"
+          NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER  # Create the next sprint branch name
+          git checkout -b $NEXT_SPRINT_BRANCH
+          git push origin $NEXT_SPRINT_BRANCH
 
       - name: Update CURRENT_SPRINT for the next sprint
         run: |
           CURRENT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
-          CURRENT_SPRINT="$BRANCH_PREFIX$CURRENT_SPRINT_NUMBER"  # Update the sprint name
+          CURRENT_SPRINT=$BRANCH_PREFIX$CURRENT_SPRINT_NUMBER  # Update the sprint name
           echo "CURRENT_SPRINT=$CURRENT_SPRINT" >> $GITHUB_ENV
