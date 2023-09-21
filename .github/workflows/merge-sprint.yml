@@ -28,14 +28,14 @@ jobs:
           git fetch origin dev-cicd
           git checkout dev-cicd
           git pull origin dev-cicd
-          git fetch origin ${{ steps.current_sprint.outputs.sprint }}
+          git fetch origin ${{ steps.current_sprint.outputs.sprint }} # steps : name of the variable, current_sprint : name of the file, outputs : type of the variable, sprint : name of the variable as declared above
           git merge --allow-unrelated-histories origin/${{ steps.current_sprint.outputs.sprint }}
           git push origin dev-cicd
 
       - name: Delete current sprint branch
         run: |
-          git checkout dev-cicd
-          git branch -d ${{ steps.current_sprint.outputs.sprint }}
+          git fetch origin ${{ steps.current_sprint.outputs.sprint }}
+          git branch -d --remote ${{ steps.current_sprint.outputs.sprint }}
           git push origin --delete ${{ steps.current_sprint.outputs.sprint }}
 
       - name: Update current sprint
