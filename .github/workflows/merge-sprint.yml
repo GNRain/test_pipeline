@@ -19,8 +19,10 @@ jobs:
 
       - name: Merge changes from $CURRENT_SPRINT into dev-cicd
         run: |
+          git checkout dev-cicd
+          git pull origin dev-cicd
           git merge $CURRENT_SPRINT
-          git push origin main
+          git push origin dev-cicd
 
       - name: Delete current sprint branch
         run: |
@@ -31,12 +33,12 @@ jobs:
         run: |
           CURRENT_SPRINT_NUMBER=${CURRENT_SPRINT#*_CV}  # Extract the current sprint number
           NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
-          NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER  # Create the next sprint branch name
+          NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER  # Create the next sprint branch name without quotes
           git checkout -b $NEXT_SPRINT_BRANCH
           git push origin $NEXT_SPRINT_BRANCH
 
       - name: Update CURRENT_SPRINT for the next sprint
         run: |
           CURRENT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
-          CURRENT_SPRINT=$BRANCH_PREFIX$CURRENT_SPRINT_NUMBER  # Update the sprint name
+          CURRENT_SPRINT=$BRANCH_PREFIX$CURRENT_SPRINT_NUMBER  # Update the sprint name without quotes
           echo "CURRENT_SPRINT=$CURRENT_SPRINT" >> $GITHUB_ENV
