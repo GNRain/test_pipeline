@@ -19,6 +19,8 @@ jobs:
 
       - name: Merge changes from $CURRENT_SPRINT into dev-cicd
         run: |
+          git config user.name "Github Action CICD"
+          git config user.email "CICD@silverbrain.ai"
           git fetch origin dev-cicd
           git checkout dev-cicd
           git pull origin dev-cicd
