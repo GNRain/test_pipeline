@@ -6,7 +6,7 @@ on:
   workflow_dispatch:  # Enable manual triggering of the workflow
 
 env:
-  CURRENT_SPRINT: SPRINT_23_CV39  # Update with the current sprint name including the 'origin/' prefix
+  CURRENT_SPRINT: origin/SPRINT_23_CV39  # Update with the current sprint name including the 'origin/' prefix
   BRANCH_PREFIX: SPRINT_23_CV  # Update with your branch prefix without quotes
 
 jobs:
@@ -19,22 +19,37 @@ jobs:
 
       - name: Merge changes from $CURRENT_SPRINT into dev-cicd
         run: |
-          git fetch origin $CURRENT_SPRINT:current_sprint
-          git checkout origin/dev-cicd
-          git merge current_sprint --no-ff --no-edit
-          git push origin dev-cicd
+          if git ls-remote --exit-code --heads origin $CURRENT_SPRINT; then
+            git fetch origin $CURRENT_SPRINT:current_sprint
+            git checkout dev-cicd
+            git merge current_sprint --no-ff --no-edit
+            git push origin dev-cicd
+          else
+            echo "Branch $CURRENT_SPRINT does not exist in the remote repository."
+            exit 1
+          fi
 
       - name: Delete current sprint branch
         run: |
-          git push origin --delete $CURRENT_SPRINT
+          if git ls-remote --exit-code --heads origin $CURRENT_SPRINT; then
+            git push origin --delete $CURRENT_SPRINT
+          else
+            echo "Branch $CURRENT_SPRINT does not exist in the remote repository."
+            exit 1
+          fi
 
       - name: Create a new branch for the next sprint
         run: |
           CURRENT_SPRINT_NUMBER=${CURRENT_SPRINT#*_CV}  # Extract the current sprint number
-          NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
-          NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER  # Construct the name of the next sprint branch
-          git checkout -b $NEXT_SPRINT_BRANCH
-          git push origin $NEXT_SPRINT_BRANCH
+          if [[ $CURRENT_SPRINT_NUMBER =~ ^[0-9]+$ ]]; then
+            NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
+            NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER  # Construct the name of the next sprint branch
+            git checkout -b $NEXT_SPRINT_BRANCH
+            git push origin $NEXT_SPRINT_BRANCH
+          else
+            echo "Invalid sprint number: $CURRENT_SPRINT_NUMBER"
+            exit 1
+          fi
 
       - name: Update CURRENT_SPRINT for the next sprint
         run: |
