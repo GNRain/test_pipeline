@@ -40,7 +40,7 @@ jobs:
 
       - name: Update current sprint
         run: |
-          CURRENT_SPRINT_NUMBER=${${{ steps.current_sprint.outputs.sprint }}#*_CV}  # Extract the current sprint number
+          CURRENT_SPRINT_NUMBER=${{ steps.current_sprint.outputs.sprint##*_CV}}  # Extract the current sprint number
           NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
           echo "${{ env.BRANCH_PREFIX }}$NEXT_SPRINT_NUMBER" > current_sprint.txt  # Update the current sprint
           git add current_sprint.txt
