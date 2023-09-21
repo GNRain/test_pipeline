@@ -29,7 +29,7 @@ jobs:
           git checkout dev-cicd
           git pull origin dev-cicd
           git fetch origin ${{ steps.current_sprint.outputs.sprint }}
-          git merge origin/${{ steps.current_sprint.outputs.sprint }}
+          git merge --allow-unrelated-histories origin/${{ steps.current_sprint.outputs.sprint }}
           git push origin dev-cicd
 
       - name: Delete current sprint branch
