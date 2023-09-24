@@ -6,21 +6,22 @@ on:
   workflow_dispatch:  # Enable manual triggering of the workflow
 
 env:
-  BRANCH_PREFIX: SPRINT_23_CV  # Update with your branch prefix without quotes
+  BRANCH_PREFIX: Sprint_23_CW  # Update with your branch prefix without quotes
 
 jobs:
   merge_sprint:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Get current sprint
-        id: current_sprint
+      - name: Read Sprint Number from File
+        id: read_sprint
         run: |
-          echo "::set-output name=sprint::$(cat current_sprint.txt)"
-
+          SPRINT_LINE=$(cat current_sprint.txt)
+          echo "::set-output name=sprint::${SPRINT_LINE}"
+          
       - name: Merge changes from $CURRENT_SPRINT into dev-cicd
         run: |
           git config user.name "Github Action CICD"
@@ -28,29 +29,31 @@ jobs:
           git fetch origin dev-cicd
           git checkout dev-cicd
           git pull origin dev-cicd
-          git fetch origin ${{ steps.current_sprint.outputs.sprint }}
-          git merge origin/${{ steps.current_sprint.outputs.sprint }}
+          git fetch origin ${{ steps.read_sprint.outputs.sprint }} # steps : name of the variable, read_sprint : name of the file, outputs : type of the variable, sprint : name of the variable as declared above
+          git merge --allow-unrelated-histories origin/${{ steps.read_sprint.outputs.sprint }}
           git push origin dev-cicd
-
+          
       - name: Delete current sprint branch
         run: |
-          git checkout dev-cicd
-          git branch -d ${{ steps.current_sprint.outputs.sprint }}
-          git push origin --delete ${{ steps.current_sprint.outputs.sprint }}
-
-      - name: Update current sprint
+          git fetch origin ${{ steps.read_sprint.outputs.sprint }}
+          git branch -d --remote origin/${{ steps.read_sprint.outputs.sprint }}
+          git push origin --delete ${{ steps.read_sprint.outputs.sprint }}
+          
+      - name: Extract Sprint Number
+        id: extract_number
         run: |
-          CURRENT_SPRINT_NUMBER=${${{ steps.current_sprint.outputs.sprint }}#*_CV}  # Extract the current sprint number
+          SPRINT_LINE="${{ steps.read_sprint.outputs.sprint }}"
+          CURRENT_SPRINT_NUMBER=${SPRINT_LINE#*_CV}
+          echo "::set-output name=number::${CURRENT_SPRINT_NUMBER}"
+          
+      - name: Update current sprint and create new branch
+        run: |
+          CURRENT_SPRINT_NUMBER=${{ steps.extract_number.outputs.number }}  # Extract the current sprint number
           NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
           echo "${{ env.BRANCH_PREFIX }}$NEXT_SPRINT_NUMBER" > current_sprint.txt  # Update the current sprint
           git add current_sprint.txt
           git commit -m "Update current sprint to ${{ env.BRANCH_PREFIX }}$NEXT_SPRINT_NUMBER"
           git push origin dev-cicd
-
-      - name: Create a new branch for the next sprint
-        run: |
-          CURRENT_SPRINT_NUMBER=${{ steps.current_sprint.outputs.sprint }}#*_CV  # Extract the current sprint number
-          NEXT_SPRINT_NUMBER=$((CURRENT_SPRINT_NUMBER + 1))  # Increment the sprint number
-          NEXT_SPRINT_BRANCH=${{ env.BRANCH_PREFIX }}$NEXT_SPRINT_NUMBER
+          NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER
           git checkout -b $NEXT_SPRINT_BRANCH
           git push origin $NEXT_SPRINT_BRANCH
