@@ -53,7 +53,7 @@ jobs:
           echo "${{ env.BRANCH_PREFIX }}$NEXT_SPRINT_NUMBER" > current_sprint.txt  # Update the current sprint
           git add current_sprint.txt
           git commit -m "Update current sprint to ${{ env.BRANCH_PREFIX }}$NEXT_SPRINT_NUMBER"
-          git push origin dev-cicd
+          git push origin main
           NEXT_SPRINT_BRANCH=$BRANCH_PREFIX$NEXT_SPRINT_NUMBER
           git checkout -b $NEXT_SPRINT_BRANCH
           git push origin $NEXT_SPRINT_BRANCH
